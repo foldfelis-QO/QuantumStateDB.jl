@@ -3,6 +3,11 @@ uuid = "60e91ee2-604c-4965-af86-8cb346de0b34"
 authors = ["JingYu Ning <foldfelis@gmail.com> and contributors"]
 version = "0.1.0"
 
+[deps]
+DataFrames = "a93c6f00-e57d-5684-b7b6-d8193f3e46c0"
+JSON3 = "0f8b85d8-7281-11e9-16c2-39a750bddbf1"
+LibPQ = "194296ae-ab2e-5f79-8cd4-7183a0a5a0d1"
+
 [compat]
 julia = "1.6"
 
