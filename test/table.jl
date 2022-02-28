@@ -14,7 +14,7 @@
     dbconfig[:dbname] = DBNAME
 
     # create "SqueezedStatesData" table including uuid column into "test_db"
-    create_table(SqueezedStatesData, gen_table_schema(SqueezedStatesData), dbconfig=dbconfig)
+    create_table(string(SqueezedStatesData), gen_table_schema(SqueezedStatesData), dbconfig=dbconfig)
 
     column_names = [
         "ID",
@@ -35,7 +35,7 @@
     @test all(lowercase(col) in column_names_from_sql for col in column_names)
 
     # create "SqueezedThermalStatesData" table including uuid column into "test_db"
-    create_table(SqueezedThermalStatesData, gen_table_schema(SqueezedThermalStatesData), dbconfig=dbconfig)
+    create_table(string(SqueezedThermalStatesData), gen_table_schema(SqueezedThermalStatesData), dbconfig=dbconfig)
 
     column_names = [
         "ID",

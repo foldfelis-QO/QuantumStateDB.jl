@@ -25,7 +25,7 @@
     ]
 
     create_table(
-        TestTable,
+        string(TestTable),
         """
         CREATE TABLE $(string(TestTable)) (
             $(column_names[1]) UUID DEFAULT uuid_generate_v4(),

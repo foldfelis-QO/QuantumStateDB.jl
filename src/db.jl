@@ -64,10 +64,10 @@ end
 # # create table #
 # ################
 
-function create_table(table_name::DataType, sql; dbconfig=current_dbconfig())
+function create_table(table_name::String, sql; dbconfig=current_dbconfig())
     connection = LibPQ.Connection(to_config_string(dbconfig))
-        @info "Drop table $(string(table_name)) if exists!"
-        execute(connection, "DROP TABLE IF EXISTS $(string(table_name));")
+        @info "Drop table $table_name if exists!"
+        execute(connection, "DROP TABLE IF EXISTS $table_name;")
 
         result = execute(connection, sql)
         close(result)
