@@ -3,10 +3,10 @@ export
     current_dbconfig,
 
     create_database,
+    enable_uuid,
     create_table,
     from_sql,
-    to_sql,
-    enable_uuid
+    to_sql
 
 db_config_path() = joinpath(DEPOT_PATH[1], "config", "QuantumStateDB", "dbconfig.json")
 
@@ -40,6 +40,16 @@ function create_database(dbname::String; dbconfig=current_dbconfig())
     close(connection)
 
     return dbname
+end
+
+function enable_uuid(dbname::String; dbconfig=current_dbconfig())
+    dbconfig = copy(dbconfig)
+    dbconfig[:dbname] = dbname
+    connection = LibPQ.Connection(to_config_string(dbconfig))
+        execute(connection, "CREATE EXTENSION IF NOT EXISTS \"uuid-ossp\";")
+    close(connection)
+
+    return 0
 end
 
 function create_table(table_name::DataType, sql; dbconfig=current_dbconfig())
@@ -83,16 +93,6 @@ function to_sql(df::DataFrame, table_name::DataType; dbconfig=current_dbconfig()
                 "INSERT INTO $(string(table_name)) ($col_names) VALUES ($vals);",
             )
         execute(connection, "COMMIT;")
-    close(connection)
-
-    return 0
-end
-
-function enable_uuid(dbname::String; dbconfig=current_dbconfig())
-    dbconfig = copy(dbconfig)
-    dbconfig[:dbname] = dbname
-    connection = LibPQ.Connection(to_config_string(dbconfig))
-        execute(connection, "CREATE EXTENSION IF NOT EXISTS \"uuid-ossp\";")
     close(connection)
 
     return 0
