@@ -18,6 +18,7 @@ end
 const DBNAME = "test_db"
 
 @testset "QuantumStateDB.jl" begin
+    include("utils.jl")
     include("db.jl")
     include("table.jl")
 end

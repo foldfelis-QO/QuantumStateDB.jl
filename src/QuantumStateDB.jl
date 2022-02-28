@@ -4,6 +4,7 @@ using JSON3
 using LibPQ
 using DataFrames
 
+include("utils.jl")
 include("db.jl")
 include("table.jl")
 

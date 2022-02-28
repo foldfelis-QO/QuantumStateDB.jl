@@ -1,4 +1,5 @@
 export
+    QuantumStatesData,
     SqueezedStatesData,
     SqueezedThermalStatesData,
 
@@ -6,26 +7,12 @@ export
 
 
 abstract type QuantumStatesData end
-
 struct SqueezedStatesData <: QuantumStatesData end
 struct SqueezedThermalStatesData <: QuantumStatesData end
 
+Base.string(::Type{QuantumStatesData}) = "quantum_states"
 Base.string(::Type{SqueezedStatesData}) = "squeezed_states"
 Base.string(::Type{SqueezedThermalStatesData}) = "squeezed_thermal_states"
-
-ρ2psql(m::AbstractMatrix) = "'" * replace(string([m[i, :] for i in 1:size(m, 1)]), '['=>'{', ']'=>'}') * "'"
-
-function p2psql(p::AbstractMatrix)
-    θs, xs = p[1, :], p[2, :]
-
-    return replace(
-        string(collect(zip(θs, xs))),
-        "[" => "'{",
-        "]" => "}'",
-        "(" => "\"(",
-        ")" => ")\""
-    )
-end
 
 function gen_table_schema(table::Type{SqueezedStatesData})
     return """
