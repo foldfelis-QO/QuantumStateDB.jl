@@ -8,6 +8,10 @@ export
     from_sql,
     to_sql
 
+# #############
+# # db config #
+# #############
+
 db_config_path() = joinpath(DEPOT_PATH[1], "config", "QuantumStateDB", "dbconfig.json")
 
 const DBCONFIG = Dict{Symbol,Any}()
@@ -33,6 +37,10 @@ current_dbconfig() = DBCONFIG
 
 to_config_string(config::Dict) = join(["$k=$v" for (k, v) in config], " ")
 
+# #############
+# # create db #
+# #############
+
 function create_database(dbname::String; dbconfig=current_dbconfig())
     connection = LibPQ.Connection(to_config_string(dbconfig))
         result = execute(connection, "CREATE DATABASE $(dbname);")
@@ -52,6 +60,10 @@ function enable_uuid(dbname::String; dbconfig=current_dbconfig())
     return 0
 end
 
+# ################
+# # create table #
+# ################
+
 function create_table(table_name::DataType, sql; dbconfig=current_dbconfig())
     connection = LibPQ.Connection(to_config_string(dbconfig))
         @info "Drop table $(string(table_name)) if exists!"
@@ -63,6 +75,10 @@ function create_table(table_name::DataType, sql; dbconfig=current_dbconfig())
 
     return table_name
 end
+
+# ###############
+# # query utils #
+# ###############
 
 function from_sql(table_name::DataType; dbconfig=current_dbconfig())
     connection = LibPQ.Connection(to_config_string(dbconfig))
