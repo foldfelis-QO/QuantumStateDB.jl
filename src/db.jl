@@ -54,7 +54,9 @@ end
 
 function create_table(table_name::DataType, sql; dbconfig=current_dbconfig())
     connection = LibPQ.Connection(to_config_string(dbconfig))
+        @info "Drop table $(string(table_name)) if exists!"
         execute(connection, "DROP TABLE IF EXISTS $(string(table_name));")
+
         result = execute(connection, sql)
         close(result)
     close(connection)

@@ -1,10 +1,17 @@
-abstract type QuantumStates end
+export
+    SqueezedStatesData,
+    SqueezedThermalStatesData,
 
-struct SqueezedStates <: QuantumStates end
-struct SqueezedThermalStates <: QuantumStates end
+    gen_table_schema
 
-Base.string(::Type{SqueezedStates}) = "squeezed_states"
-Base.string(::Type{SqueezedThermalStates}) = "squeezed_thermal_states"
+
+abstract type QuantumStatesData end
+
+struct SqueezedStatesData <: QuantumStatesData end
+struct SqueezedThermalStatesData <: QuantumStatesData end
+
+Base.string(::Type{SqueezedStatesData}) = "squeezed_states"
+Base.string(::Type{SqueezedThermalStatesData}) = "squeezed_thermal_states"
 
 ρ2psql(m::AbstractMatrix) = "'" * replace(string([m[i, :] for i in 1:size(m, 1)]), '['=>'{', ']'=>'}') * "'"
 
@@ -20,20 +27,21 @@ function p2psql(p::AbstractMatrix)
     )
 end
 
-function generate_create_table(::Type{SqueezedStates})
+function gen_table_schema(table::Type{SqueezedStatesData})
     return """
-    CREATE TABLE $(string(table)) (
-        ID UUID DEFAULT uuid_generate_v4(),
+        CREATE TABLE $(string(table)) (
+            ID UUID DEFAULT uuid_generate_v4(),
 
-        r FLOAT8 NOT NULL,
-        theta FLOAT8 NOT NULL,
+            r FLOAT8 NOT NULL,
+            theta FLOAT8 NOT NULL,
 
-        DIM INT8 NOT NULL,
-        rho FLOAT8[][] NOT NULL,
+            DIM INT8 NOT NULL,
+            rho FLOAT8[][] NOT NULL,
 
-        NPoints INT8 NOT NULL,
-        BHD POINT[] NOT NULL,
+            NPoints INT8 NOT NULL,
+            BHD POINT[] NOT NULL,
 
-        PRIMARY KEY (ID)
-    );"""
+            PRIMARY KEY (ID)
+        );
+    """
 end

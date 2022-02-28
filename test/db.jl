@@ -1,13 +1,13 @@
-# One should drop database "test_db" manually before running the test
-
 @testset "db" begin
+    # drop database "test_db" if exists
+    drop_db(DBNAME)
+
     # create db
-    db_name = "test_db"
-    create_database(db_name)
-    @test db_name in from_sql("SELECT datname FROM pg_database;")[!, 1]
+    create_database(DBNAME)
+    @test DBNAME in from_sql("SELECT datname FROM pg_database;")[!, 1]
 
     # enable uuid utils in "test_db"
-    @test enable_uuid(db_name) == 0
+    @test enable_uuid(DBNAME) == 0
 
     # table type
     struct TestTable end
@@ -15,7 +15,7 @@
 
     # create table including uuid column into "test_db"
     dbconfig = copy(current_dbconfig())
-    dbconfig[:dbname] = db_name
+    dbconfig[:dbname] = DBNAME
 
     column_names = [
         "ID",
