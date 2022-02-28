@@ -1,6 +1,10 @@
 using QuantumStateDB
 using Test
 
+load_config!()
+const PG = current_dbconfig()
+@show PG[:user], PG[:password], PG[:dbname]
+
 @testset "QuantumStateDB.jl" begin
-    # Write your tests here.
+    include("db.jl")
 end

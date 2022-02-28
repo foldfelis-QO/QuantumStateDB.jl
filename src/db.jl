@@ -1,3 +1,13 @@
+export
+    load_config!,
+    current_dbconfig,
+
+    create_database,
+    create_table,
+    from_sql,
+    to_sql,
+    enable_uuid
+
 db_config_path() = joinpath(DEPOT_PATH[1], "config", "QuantumStateDB", "dbconfig.json")
 
 const DBCONFIG = Dict{Symbol,Any}()
@@ -11,8 +21,9 @@ function load_config!(; auth_file::String=db_config_path())
             DBCONFIG[k] = v
         end
     else
-        DBCONFIG[:user] = ENV["QSDB_USER"]
-        DBCONFIG[:passwd] = ENV["QSDB_PASSWD"]
+        DBCONFIG[:user] = ENV["PGUSER"]
+        DBCONFIG[:password] = ENV["PGPASSWORD"]
+        DBCONFIG[:dbname] = ENV["PGDATABASE"]
     end
 
     return DBCONFIG
