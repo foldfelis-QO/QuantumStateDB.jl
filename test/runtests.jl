@@ -21,4 +21,5 @@ const DBNAME = "test_db"
     include("utils.jl")
     include("db.jl")
     include("table.jl")
+    include("api.jl")
 end
