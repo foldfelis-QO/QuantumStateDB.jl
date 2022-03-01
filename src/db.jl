@@ -80,16 +80,6 @@ end
 # # query utils #
 # ###############
 
-function from_sql(table_name::DataType; dbconfig=current_dbconfig())
-    connection = LibPQ.Connection(to_config_string(dbconfig))
-        result = execute(connection, "SELECT * FROM $(string(table_name));")
-            df = DataFrame(result)
-        close(result)
-    close(connection)
-
-    return df
-end
-
 function from_sql(sql::String; dbconfig=current_dbconfig())
     connection = LibPQ.Connection(to_config_string(dbconfig))
         result = execute(connection, sql)
@@ -100,7 +90,19 @@ function from_sql(sql::String; dbconfig=current_dbconfig())
     return df
 end
 
-function to_sql(df::DataFrame, table_name::DataType; dbconfig=current_dbconfig())
+# ##### table <-> df #####
+
+function from_sql(table::DataType; dbconfig=current_dbconfig())
+    connection = LibPQ.Connection(to_config_string(dbconfig))
+        result = execute(connection, "SELECT * FROM $(string(table));")
+            df = DataFrame(result)
+        close(result)
+    close(connection)
+
+    return df
+end
+
+function to_sql(df::DataFrame, table::DataType; dbconfig=current_dbconfig())
     col_names = join(lowercase.(names(df)), ", ")
     vals = join(["\$$i" for i in 1:ncol(df)], ", ")
     connection = LibPQ.Connection(to_config_string(dbconfig))
@@ -108,7 +110,7 @@ function to_sql(df::DataFrame, table_name::DataType; dbconfig=current_dbconfig()
             LibPQ.load!(
                 columntable(df),
                 connection,
-                "INSERT INTO $(string(table_name)) ($col_names) VALUES ($vals);",
+                "INSERT INTO $(string(table)) ($col_names) VALUES ($vals);",
             )
         execute(connection, "COMMIT;")
     close(connection)

@@ -1,5 +1,8 @@
 using QuantumStateDB
 using LibPQ
+using QuantumStateBase
+using QuantumStateDistributions
+using DataFrames
 using Test
 
 load_config!()

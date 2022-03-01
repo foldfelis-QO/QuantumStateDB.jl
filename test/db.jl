@@ -13,10 +13,11 @@
     struct TestTable end
     Base.string(::Type{TestTable}) = "test_table"
 
-    # create table including uuid column into "test_db"
+    # modify dbconfig
     dbconfig = copy(current_dbconfig())
     dbconfig[:dbname] = DBNAME
 
+    # create table including uuid column into "test_db"
     column_names = [
         "ID",
         "r", "theta",
@@ -55,4 +56,23 @@
     )[!, 1]
 
     @test all(lowercase(col) in column_names_from_sql for col in column_names)
+end
+
+@testset "insert" begin
+    dbconfig = copy(current_dbconfig())
+    dbconfig[:dbname] = DBNAME
+
+    n = 10
+
+    r = LinRange(0, 1, n); θ = LinRange(0, 2π, n)
+    dim = 100; sq(r, θ) = SqueezedState(r, θ, Matrix, dim=dim); ρ = sq.(r,θ)
+    np = 4096; p(ρ) = rand(GaussianStateBHD(ρ), np); ps = p.(ρ)
+
+    df = DataFrame([
+        :r=>r, :theta=>θ,
+        :DIM=>dim, :rho=>hexbytes_str.(ρ),
+        :NPoints=>np, :BHD=>hexbytes_str.(ps)
+    ])
+
+    to_sql(df, TestTable, dbconfig=dbconfig)
 end
