@@ -23,10 +23,10 @@ function gen_table_schema(table::Type{SqueezedStatesData})
             theta FLOAT8 NOT NULL,
 
             DIM INT8 NOT NULL,
-            rho FLOAT8[][] NOT NULL,
+            rho BYTEA NOT NULL,
 
             NPoints INT8 NOT NULL,
-            BHD POINT[] NOT NULL,
+            BHD BYTEA NOT NULL,
 
             PRIMARY KEY (ID)
         );
@@ -43,10 +43,10 @@ function gen_table_schema(table::Type{SqueezedThermalStatesData})
             nbar FLOAT8 NOT NULL,
 
             DIM INT8 NOT NULL,
-            rho FLOAT8[][] NOT NULL,
+            rho BYTEA NOT NULL,
 
             NPoints INT8 NOT NULL,
-            BHD POINT[] NOT NULL,
+            BHD BYTEA NOT NULL,
 
             PRIMARY KEY (ID)
         );
