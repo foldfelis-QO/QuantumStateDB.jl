@@ -1,8 +1,8 @@
 name: CI
 on:
   push:
-    branches:
-      - master
+    branches: '*'
+      # - master
     tags: '*'
   pull_request:
 concurrency:
@@ -10,20 +10,27 @@ concurrency:
   # Cancel intermediate builds: only if it is a pull request build.
   group: ${{ github.workflow }}-${{ github.ref }}
   cancel-in-progress: ${{ startsWith(github.ref, 'refs/pull/') }}
+env:
+  PGDATABASE: postgres
+  PGUSER: postgres
+  PGPASSWORD: root
 jobs:
   test:
-    name: Julia ${{ matrix.version }} - ${{ matrix.os }} - ${{ matrix.arch }} - ${{ github.event_name }}
+    name: Julia ${{ matrix.version }} - PostgreSQL ${{ matrix.postgresql-version }} - ${{ matrix.os }} - ${{ matrix.arch }} - ${{ github.event_name }}
     runs-on: ${{ matrix.os }}
     strategy:
       fail-fast: false
       matrix:
         version:
           - '1.6'
+          - '1'
         os:
           - ubuntu-latest
           - windows-latest
         arch:
           - x64
+        postgresql-version:
+          - latest
     steps:
       - uses: actions/checkout@v2
       - uses: julia-actions/setup-julia@v1
@@ -31,6 +38,41 @@ jobs:
           version: ${{ matrix.version }}
           arch: ${{ matrix.arch }}
       - uses: julia-actions/cache@v1
+      # install psql on Linux
+      - name: Install PostgreSQL
+        uses: harmon758/postgresql-action@v1
+        if: ${{ runner.os == 'Linux' }}
+        with:
+          postgresql version: ${{ matrix.postgresql-version }}
+          postgresql user: ${{ env.PGUSER }}
+          postgresql password: ${{ env.PGPASSWORD }}
+      - name: Wait / Sleep
+        uses: jakejarvis/wait-action@v0.1.0
+        if: ${{ runner.os == 'Linux' }}
+        with:
+          time: '1m'
+      - name: Collect Docker Logs
+        uses: jwalton/gh-docker-logs@v1.0.0
+        if: ${{ runner.os == 'Linux' }}
+      - name: Check running containers
+        run: docker ps -a
+        if: ${{ runner.os == 'Linux' }}
+      - name: Set PGHOST on Linux
+        run: echo "PGHOST=localhost" >> $GITHUB_ENV
+        if: ${{ runner.os == 'Linux' }}
+      # install psql on Windows
+      - name: Add PostgreSQL to Path
+        run: |
+          echo $env:PGBIN
+          echo $env:PGBIN | Out-File -FilePath $env:GITHUB_PATH -Encoding utf8 -Append
+        if: ${{ runner.os == 'Windows' }}
+      - name: Start Windows PostgreSQL service
+        run: |
+          pg_ctl -D $env:PGDATA start
+          pg_ctl -D $env:PGDATA status
+        if: ${{ runner.os == 'Windows' }}
+      # run tests
+      - run: psql -c '\conninfo'
       - uses: julia-actions/julia-buildpkg@v1
       - uses: julia-actions/julia-runtest@v1
       - uses: julia-actions/julia-processcoverage@v1

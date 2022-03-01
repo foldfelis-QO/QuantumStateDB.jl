@@ -3,11 +3,21 @@ uuid = "60e91ee2-604c-4965-af86-8cb346de0b34"
 authors = ["JingYu Ning <foldfelis@gmail.com> and contributors"]
 version = "0.1.0"
 
+[deps]
+DataFrames = "a93c6f00-e57d-5684-b7b6-d8193f3e46c0"
+InteractiveUtils = "b77e0a4c-d291-57a0-90e8-8db25a27a240"
+JSON3 = "0f8b85d8-7281-11e9-16c2-39a750bddbf1"
+LibPQ = "194296ae-ab2e-5f79-8cd4-7183a0a5a0d1"
+Tables = "bd369af6-aec1-5ad0-b16a-f7cc5008161c"
+
 [compat]
 julia = "1.6"
 
 [extras]
 Test = "8dfed614-e22c-5e08-85e1-65c5234f0b40"
+QuantumStateBase = "73ce9c4f-35d1-4161-b9e6-26915895bfed"
+QuantumStateDistributions = "78ba9c6e-4c92-4abc-8d32-e9cb1304b8da"
+
 
 [targets]
-test = ["Test"]
+test = ["Test", "QuantumStateBase", "QuantumStateDistributions"]
