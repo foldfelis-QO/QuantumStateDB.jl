@@ -34,10 +34,10 @@
             $(column_names[3]) FLOAT8 NOT NULL,
 
             $(column_names[4]) INT8 NOT NULL,
-            $(column_names[5]) BYTEA NOT NULL,
+            $(column_names[5]) BYTEA COMPRESSION lz4 NOT NULL,
 
             $(column_names[6]) INT8 NOT NULL,
-            $(column_names[7]) BYTEA NOT NULL,
+            $(column_names[7]) BYTEA COMPRESSION lz4 NOT NULL,
 
             PRIMARY KEY ($(column_names[1]))
         );
