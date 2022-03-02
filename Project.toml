@@ -11,13 +11,13 @@ LibPQ = "194296ae-ab2e-5f79-8cd4-7183a0a5a0d1"
 Tables = "bd369af6-aec1-5ad0-b16a-f7cc5008161c"
 
 [compat]
+LibPQ = "1"
 julia = "1.6"
 
 [extras]
-Test = "8dfed614-e22c-5e08-85e1-65c5234f0b40"
 QuantumStateBase = "73ce9c4f-35d1-4161-b9e6-26915895bfed"
 QuantumStateDistributions = "78ba9c6e-4c92-4abc-8d32-e9cb1304b8da"
-
+Test = "8dfed614-e22c-5e08-85e1-65c5234f0b40"
 
 [targets]
 test = ["Test", "QuantumStateBase", "QuantumStateDistributions"]
