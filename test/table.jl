@@ -21,6 +21,7 @@
         "r", "theta",
         "DIM", "rho",
         "NPoints", "BHD",
+        "WRange", "W",
     ]
 
     column_names_from_sql = from_sql(
@@ -42,6 +43,7 @@
         "r", "theta", "nbar",
         "DIM", "rho",
         "NPoints", "BHD",
+        "WRange", "W",
     ]
 
     column_names_from_sql = from_sql(

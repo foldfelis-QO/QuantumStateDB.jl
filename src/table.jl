@@ -28,6 +28,9 @@ function gen_table_schema(table::Type{SqueezedStatesData})
             NPoints INT8 NOT NULL,
             BHD BYTEA COMPRESSION lz4 NOT NULL,
 
+            WRange INT8 NOT NULL,
+            W BYTEA COMPRESSION lz4 NOT NULL,
+
             PRIMARY KEY (ID)
         );
     """
@@ -47,6 +50,9 @@ function gen_table_schema(table::Type{SqueezedThermalStatesData})
 
             NPoints INT8 NOT NULL,
             BHD BYTEA COMPRESSION lz4 NOT NULL,
+
+            WRange INT8 NOT NULL,
+            W BYTEA COMPRESSION lz4 NOT NULL,
 
             PRIMARY KEY (ID)
         );
