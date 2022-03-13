@@ -1,7 +1,13 @@
 export
     create_database,
     create_table,
-    create_all
+    create_all,
+
+    apply!
+
+# ######
+# # db #
+# ######
 
 const QSDB = string(QuantumStatesData)
 
@@ -25,4 +31,20 @@ function create_all(; dbname::String=QSDB)
     for qs in subtypes(QuantumStatesData)
         create_table(qs, dbname=dbname)
     end
+end
+
+# ##############
+# # preprocess #
+# ##############
+
+# ###############
+# # postprocess #
+# ###############
+
+function apply!(df, pairs...)
+    for (col, f) in pairs
+        df[!, col] = f.(df[!, col])
+    end
+
+    return df
 end

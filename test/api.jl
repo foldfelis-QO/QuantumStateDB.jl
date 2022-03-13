@@ -68,14 +68,17 @@ end
 
     df_from_sql = from_sql(SqueezedStatesData, dbconfig=dbconfig)
 
-    df_from_sql[!, :r] = Float64.(df_from_sql[!, :r])
-    df_from_sql[!, :theta] = Float64.(df_from_sql[!, :theta])
-    df_from_sql[!, :dim] = Int.(df_from_sql[!, :dim])
-    df_from_sql[!, :rho] = hexbytes2array(ComplexF64).(df_from_sql[!, :rho])
-    df_from_sql[!, :n_points] = Int.(df_from_sql[!, :n_points])
-    df_from_sql[!, :bhd] = hexbytes2array(Float64).(df_from_sql[!, :bhd])
-    df_from_sql[!, :w_range] = Int.(df_from_sql[!, :w_range])
-    df_from_sql[!, :w] = hexbytes2array(Float64).(df_from_sql[!, :w])
+    postprocessor = [
+        :r => Float64,
+        :theta => Float64,
+        :dim => Int,
+        :rho => hexbytes2array(ComplexF64),
+        :n_points => Int,
+        :bhd => hexbytes2array(Float64),
+        :w_range => Int,
+        :w => hexbytes2array(Float64),
+    ]
+    apply!(df_from_sql, postprocessor...)
 
     @test df_from_sql[1, :r] == r
     @test df_from_sql[1, :theta] == θ
