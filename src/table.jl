@@ -5,7 +5,6 @@ export
 
     gen_table_schema
 
-
 abstract type QuantumStatesData end
 struct SqueezedStatesData <: QuantumStatesData end
 struct SqueezedThermalStatesData <: QuantumStatesData end
