@@ -39,7 +39,7 @@ end
 function gen_table_schema(table::Type{SqueezedThermalStatesData})
     return """
         CREATE TABLE $(string(table)) (
-            ID UUID DEFAULT uuid_generate_v4(),
+            id UUID DEFAULT uuid_generate_v4(),
 
             r FLOAT8 NOT NULL,
             theta FLOAT8 NOT NULL,
