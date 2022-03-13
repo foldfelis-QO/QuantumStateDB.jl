@@ -234,3 +234,12 @@ end
         @test all(reshape(df_from_sql[nᵢ+1, :w], 101, 101) .== w[nᵢ])
     end
 end
+
+@testset "nrow" begin
+    @test QuantumStateDB.nrow(SqueezedStatesData) == 11
+    @test QuantumStateDB.nrow(SqueezedThermalStatesData) == 11
+end
+
+@testset "from_sql" begin
+    @show nrow(from_sql(SqueezedStatesData, 5, order=:r, offset=6)) == 5
+end
