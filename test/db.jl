@@ -20,9 +20,9 @@
     # create table including uuid column into "test_db"
     column_names = [
         "ID",
-        "r", "theta",
-        "DIM", "rho",
-        "NPoints", "BHD",
+        "FloatVal",
+        "IntVal",
+        "ByteVec",
     ]
 
     create_table(
@@ -32,13 +32,8 @@
             $(column_names[1]) UUID DEFAULT uuid_generate_v4(),
 
             $(column_names[2]) FLOAT8 NOT NULL,
-            $(column_names[3]) FLOAT8 NOT NULL,
-
-            $(column_names[4]) INT8 NOT NULL,
-            $(column_names[5]) BYTEA COMPRESSION lz4 NOT NULL,
-
-            $(column_names[6]) INT8 NOT NULL,
-            $(column_names[7]) BYTEA COMPRESSION lz4 NOT NULL,
+            $(column_names[3]) INT8 NOT NULL,
+            $(column_names[4]) BYTEA COMPRESSION lz4 NOT NULL,
 
             PRIMARY KEY ($(column_names[1]))
         );
@@ -58,33 +53,24 @@
     @test all(lowercase(col) in column_names_from_sql for col in column_names)
 
     # test insert
-    r = 0.8; θ = π/2
-    dim = 1000; ρ = SqueezedState(r, θ, Matrix, dim=dim)
-    np = 40960; ps = rand(GaussianStateBHD(ρ), np)
+    f = rand(Float64)
+    i = rand(Int64)
+    dim = 100
+    b = rand(ComplexF64, dim, dim)
 
     df = DataFrame([
-        :r=>r, :theta=>θ,
-        :DIM=>dim, :rho=>hexbytes_str(ρ),
-        :NPoints=>np, :BHD=>hexbytes_str(ps)
+        :floatval => f,
+        :intval => i,
+        :ByteVec => hexbytes_str(b)
     ])
 
     to_sql(df, TestTable, dbconfig=dbconfig)
 
     df_from_sql = from_sql(TestTable, dbconfig=dbconfig)
 
-    df_from_sql[!, :r] = Float64.(df_from_sql[!, :r])
-    df_from_sql[!, :theta] = Float64.(df_from_sql[!, :theta])
-    df_from_sql[!, :dim] = Int.(df_from_sql[!, :dim])
-    df_from_sql[!, :rho] = hexbytes2array(ComplexF64).(df_from_sql[!, :rho])
-    df_from_sql[!, :npoints] = Int.(df_from_sql[!, :npoints])
-    df_from_sql[!, :bhd] = hexbytes2array(Float64).(df_from_sql[!, :bhd])
-
-    @test df_from_sql[1, :r] == r
-    @test df_from_sql[1, :theta] == θ
-    @test df_from_sql[1, :dim] == dim
-    @test all(reshape(df_from_sql[1, :rho], dim, dim) .== ρ)
-    @test df_from_sql[1, :npoints] == np
-    @test all(reshape(df_from_sql[1, :bhd], 2, np) .== ps)
+    @test Float64(df_from_sql[1, :floatval]) == f
+    @test Int64(df_from_sql[1, :intval]) == i
+    @test all(reshape(hexbytes2array(ComplexF64, df_from_sql[1, :bytevec]), dim, dim) .== b)
 end
 
 @testset "insert" begin
@@ -93,15 +79,25 @@ end
 
     n = 10
 
-    r = LinRange(0, 1, n); θ = LinRange(0, 2π, n)
-    dim = 100; sq(r, θ) = SqueezedState(r, θ, Matrix, dim=dim); ρ = sq.(r, θ)
-    np = 4096; p(ρ) = rand(GaussianStateBHD(ρ), np); ps = p.(ρ)
+    f = rand(Float64, n)
+    i = rand(Int64, n)
+    dim = 100
+    b = [rand(ComplexF64, dim, dim) for _ in 1:n]
 
     df = DataFrame([
-        :r=>r, :theta=>θ,
-        :DIM=>dim, :rho=>hexbytes_str.(ρ),
-        :NPoints=>np, :BHD=>hexbytes_str.(ps)
+        :floatval => f,
+        :intval => i,
+        :ByteVec => hexbytes_str.(b)
     ])
 
     to_sql(df, TestTable, dbconfig=dbconfig)
+
+    df_from_sql = from_sql(TestTable, dbconfig=dbconfig)
+
+    for nᵢ in 1:n
+        # index from db should +1 because we already insert 1 row in previous testset
+        @test Float64(df_from_sql[nᵢ+1, :floatval]) == f[nᵢ]
+        @test Int64(df_from_sql[nᵢ+1, :intval]) == i[nᵢ]
+        @test all(reshape(hexbytes2array(ComplexF64, df_from_sql[nᵢ+1, :bytevec]), dim, dim) .== b[nᵢ])
+    end
 end
