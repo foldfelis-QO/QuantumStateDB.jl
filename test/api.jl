@@ -13,11 +13,11 @@
     dbconfig[:dbname] = string(QuantumStatesData)
 
     column_names = [
-        "ID",
+        "id",
         "r", "theta",
-        "DIM", "rho",
-        "NPoints", "BHD",
-        "WRange", "W",
+        "dim", "rho",
+        "n_points", "bhd",
+        "w_range", "w",
     ]
     column_names_from_sql = from_sql(
         """
@@ -30,11 +30,11 @@
     @test all(lowercase(col) in column_names_from_sql for col in column_names)
 
     column_names = [
-        "ID",
+        "id",
         "r", "theta", "nbar",
-        "DIM", "rho",
-        "NPoints", "BHD",
-        "WRange", "W",
+        "dim", "rho",
+        "n_points", "bhd",
+        "w_range", "w",
     ]
     column_names_from_sql = from_sql(
         """
@@ -48,15 +48,15 @@
 end
 
 @testset "insert" begin
-    # r = 0.8; θ = π/2
-    # dim = 1000; ρ = SqueezedState(r, θ, Matrix, dim=dim)
-    # np = 40960; ps = rand(GaussianStateBHD(ρ), np)
+    r = 0.8; θ = π/2
+    dim = 1000; ρ = SqueezedState(r, θ, Matrix, dim=dim)
+    np = 40960; ps = rand(GaussianStateBHD(ρ), np)
 
-    # df = DataFrame([
-    #     :r=>r, :theta=>θ,
-    #     :DIM=>dim, :rho=>hexbytes_str(ρ),
-    #     :NPoints=>np, :BHD=>hexbytes_str(ps)
-    # ])
+    df = DataFrame([
+        :r=>r, :theta=>θ,
+        :dim=>dim, :rho=>hexbytes_str(ρ),
+        :n_points=>np, :bhd=>hexbytes_str(ps)
+    ])
 
     # to_sql(df, TestTable, dbconfig=dbconfig)
 

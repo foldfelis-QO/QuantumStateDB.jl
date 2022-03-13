@@ -17,19 +17,19 @@ Base.string(::Type{SqueezedThermalStatesData}) = "squeezed_thermal_states"
 function gen_table_schema(table::Type{SqueezedStatesData})
     return """
         CREATE TABLE $(string(table)) (
-            ID UUID DEFAULT uuid_generate_v4(),
+            id UUID DEFAULT uuid_generate_v4(),
 
             r FLOAT8 NOT NULL,
             theta FLOAT8 NOT NULL,
 
-            DIM INT8 NOT NULL,
+            dim INT8 NOT NULL,
             rho BYTEA COMPRESSION lz4 NOT NULL,
 
-            NPoints INT8 NOT NULL,
-            BHD BYTEA COMPRESSION lz4 NOT NULL,
+            n_points INT8 NOT NULL,
+            bhd BYTEA COMPRESSION lz4 NOT NULL,
 
-            WRange INT8 NOT NULL,
-            W BYTEA COMPRESSION lz4 NOT NULL,
+            w_range INT8 NOT NULL,
+            w BYTEA COMPRESSION lz4 NOT NULL,
 
             PRIMARY KEY (ID)
         );
@@ -45,14 +45,14 @@ function gen_table_schema(table::Type{SqueezedThermalStatesData})
             theta FLOAT8 NOT NULL,
             nbar FLOAT8 NOT NULL,
 
-            DIM INT8 NOT NULL,
+            dim INT8 NOT NULL,
             rho BYTEA COMPRESSION lz4 NOT NULL,
 
-            NPoints INT8 NOT NULL,
-            BHD BYTEA COMPRESSION lz4 NOT NULL,
+            n_points INT8 NOT NULL,
+            bhd BYTEA COMPRESSION lz4 NOT NULL,
 
-            WRange INT8 NOT NULL,
-            W BYTEA COMPRESSION lz4 NOT NULL,
+            w_range INT8 NOT NULL,
+            w BYTEA COMPRESSION lz4 NOT NULL,
 
             PRIMARY KEY (ID)
         );

@@ -17,11 +17,11 @@
     create_table(string(SqueezedStatesData), gen_table_schema(SqueezedStatesData), dbconfig=dbconfig)
 
     column_names = [
-        "ID",
+        "id",
         "r", "theta",
-        "DIM", "rho",
-        "NPoints", "BHD",
-        "WRange", "W",
+        "dim", "rho",
+        "n_points", "bhd",
+        "w_range", "w",
     ]
 
     column_names_from_sql = from_sql(
@@ -39,11 +39,11 @@
     create_table(string(SqueezedThermalStatesData), gen_table_schema(SqueezedThermalStatesData), dbconfig=dbconfig)
 
     column_names = [
-        "ID",
+        "id",
         "r", "theta", "nbar",
-        "DIM", "rho",
-        "NPoints", "BHD",
-        "WRange", "W",
+        "dim", "rho",
+        "n_points", "bhd",
+        "w_range", "w",
     ]
 
     column_names_from_sql = from_sql(
