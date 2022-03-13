@@ -17,4 +17,8 @@
         "0300000000000000" * "0800000000000000" *
         "0400000000000000" * "0900000000000000" *
         "0500000000000000" * "0a00000000000000"
+
+    @test reshape(QuantumStateDB.hexbytes2array(Int)(
+        reinterpret(UInt8, reshape(m, :))
+    ), 2, 5) == m
 end
