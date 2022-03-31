@@ -3,6 +3,7 @@ export
     create_table,
     create_all,
 
+    from_sql,
     apply!
 
 # ######
@@ -40,6 +41,37 @@ end
 # ###############
 # # postprocess #
 # ###############
+
+function nrow(table::Type{<:QuantumStatesData}; dbname::String=QSDB)
+    dbconfig = copy(current_dbconfig())
+    dbconfig[:dbname] = dbname
+
+    df = from_sql("select count(*) from $(string(table));", dbconfig=dbconfig)
+
+    return Int(df[1, 1])
+end
+
+function from_sql(
+    table::Type{<:QuantumStatesData},
+    n::Integer;
+    offset=-1,
+    order=:id,
+    dbname::String=QSDB
+)
+    dbconfig = copy(current_dbconfig())
+    dbconfig[:dbname] = dbname
+
+    (offset < 0) && (offset = rand(0:nrow(table)-n))
+
+    sql = """
+        SELECT *
+            FROM $(string(table))
+            ORDER BY $order
+        LIMIT $n OFFSET $offset;
+    """
+
+    return from_sql(sql, dbconfig=dbconfig)
+end
 
 function apply!(df, pairs...)
     for (col, f) in pairs
